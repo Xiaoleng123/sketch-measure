@@ -1,3 +1,5 @@
+> fork from https://github.com/utom/sketch-measure, [utom](http://utom.design) has stopped maintaining the library, so I fork and maintain it.
+
 # A new feature for Sketch Measure: Export Layer's influence Rect to Spec.
 
 Layer's influence rect includes the area of shadows and outside borders, it's exactly the same size with the exported image.
@@ -18,14 +20,13 @@ Just select the option in Export UI
 Make it fun to create specs for developers and teammates. **Sketch 49.* support**.
 
 - [How to](http://utom.design/measure/how-to.html)
-- [中文说明](http://sketch.im/plugins/1)
 
 ![Logo](http://utom.design/logo@2x.png)
 
 ## Installing Plugins
 
 ### Install from download
-1. [Download the ZIP file](https://github.com/utom/sketch-measure/archive/master.zip) and unzip
+1. [Download the ZIP file](https://github.com/Xiaoleng123/sketch-measure/raw/master/plugin.zip) and unzip
 2. Open `Sketch Measure.sketchplugin`
 
 ### Install with Sketch Plugin Manager
@@ -70,6 +71,7 @@ To create your own custom shortcuts, go to Keyboard in your System Preferences a
 
 ## Contributors
 * Author [@utom](http://utom.design)
+* Author_Fork [Xiaoleng123](https://github.com/Xiaoleng123)
 * [@cute](http://liguangming.com) ([SketchI18N](https://github.com/cute/SketchI18N))
 * [@forestlin1212](https://github.com/forestlin1212)
 * [@ashung](https://github.com/Ashung) ([Automate-Sketch](https://github.com/Ashung/Automate-Sketch))
@@ -81,3 +83,6 @@ To create your own custom shortcuts, go to Keyboard in your System Preferences a
 
 * Follow [@utom](http://twitter.com/utom) on Twitter
 * Email <utombox@gmail.com>
+
+* Concat scenecool on WeChat
+* Email <896054682@qq.com>
