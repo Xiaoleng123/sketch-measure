@@ -2914,88 +2914,89 @@ SM.extend({
         });
     },
     export: function(){
-        if(this.exportPanel()){
-            if(this.selectionArtboards.length <= 0){
-                return false;
-            }
-            var self = this,
-                savePath = this.getSavePath();
+      if(this.exportPanel()){
+          if(this.selectionArtboards.length <= 0){
+              return false;
+          }
+          var self = this,
+              savePath = this.getSavePath();
 
-            if(savePath){
-                var processingPanel = this.SMPanel({
-                        url: this.pluginSketch + "/panel/processing.html",
-                        width: 304,
-                        height: 104,
-                        floatWindow: true
-                    }),
-                    processing = processingPanel.windowScriptObject();
+          if(savePath){
+              var processingPanel = this.SMPanel({
+                      url: this.pluginSketch + "/panel/processing.html",
+                      width: 304,
+                      height: 104,
+                      floatWindow: true
+                  }),
+                  processing = processingPanel.windowScriptObject();
 
-                this.savePath = savePath;
-                var layerCount = 0,
-                    allCount = self.allCount,
-                    artboardIndex = 0,
-                    artboardCount = self.selectionArtboards.length,
-                    exporting = false,
-                    data = {
-                        scale: self.configs.scale,
-                        unit: self.configs.unit,
-                        colorFormat: self.configs.colorFormat,
-                        artboards: [],
-                        slices: [],
-                        colors: []
-                    };
+              this.savePath = savePath;
+              var layerCount = 0,
+                  allCount = self.allCount,
+                  artboardIndex = 0,
+                  artboardCount = self.selectionArtboards.length,
+                  exporting = false,
+                  data = {
+                      scale: self.configs.scale,
+                      unit: self.configs.unit,
+                      colorFormat: self.configs.colorFormat,
+                      artboards: [],
+                      slices: [],
+                      colors: []
+                  };
 
-                self.slices = [];
-                self.sliceCache = {};
-                self.groupCache = {};
-                self.maskCache = [];
-                
-                self.selectionArtboards.forEach((artboard, index) => {
-                  const children = artboard.children() // 当前画板的所有图层
-                  const layerEnumerator = children.objectEnumerator() // 图层的迭代器
-                  const layersCount = children.count() // 当前画板的图层数量
-                  let layerIndex = 0 // 用于计数的图层变量
-                  let layer = null // 当前被解析的图层
-                  data.artboards[index] = {
-                    layers: [], // 存储当前画板的所有图层 meta 数据
-                    notes: [], // 存储当前画板的所有标记数据
-                    groups: [], // 存储分组数据，用来做图层穿透
-                  }
+              self.slices = [];
+              self.sliceCache = {};
+              self.groupCache = {};
+              self.maskCache = [];
               
-                  coscript.scheduleWithRepeatingInterval_jsFunction(0, interval => { // 每次循环只导出一个图层
-                    layer = layerEnumerator.nextObject()
-                    if (layer) {
-                      try {
-                        self.getLayer(
-                          artboard, // Sketch artboard element
-                          layer, // Sketch layer element
-                          data.artboards[artboardIndex] // Save to data
-                        );
-                      } catch (error) {
-                        console.error('get layer error', error) // 某个图层出错不中断整体流程（要是都错就尴尬了···）
-                      }
-              
-                      layerIndex++
-                      layerCount++
-
-                      processing.evaluateWebScript("processing('"  + Math.round( layerCount / allCount * 100 ) +  "%', '" + _("Processing layer %@ of %@", [layerCount, allCount]) + "')");
-              
-                      if (layerIndex >= layersCount) {
-                        this.collectData(artboardIndex, artboard, data)
-              
-                        artboardIndex++
-                        if (artboardIndex >= artboardCount) {
-                          this.exportComplete(data)
-                        }
-                      }
-                    } else {
-                      interval.cancel()
+              self.selectionArtboards.forEach((artboard, index) => {
+                const children = artboard.children() // 当前画板的所有图层
+                const layerEnumerator = children.objectEnumerator() // 图层的迭代器
+                const layersCount = children.count() // 当前画板的图层数量
+                let layerIndex = 0 // 用于计数的图层变量
+                let layer = null // 当前被解析的图层
+                data.artboards[index] = {
+                  layers: [], // 存储当前画板的所有图层 meta 数据
+                  notes: [], // 存储当前画板的所有标记数据
+                  groups: [], // 存储分组数据，用来做图层穿透
+                }
+                const artboardData = data.artboards[index]
+            
+                coscript.scheduleWithRepeatingInterval_jsFunction(0, interval => { // 每次循环只导出一个图层
+                  layer = layerEnumerator.nextObject()
+                  if (layer) {
+                    try {
+                      self.getLayer(
+                        artboard, // Sketch artboard element
+                        layer, // Sketch layer element
+                        artboardData // Save to data
+                      );
+                    } catch (error) {
+                      console.error('get layer error', error) // 某个图层出错不中断整体流程（要是都错就尴尬了···）
                     }
-                  })
+            
+                    layerIndex++
+                    layerCount++
+
+                    processing.evaluateWebScript("processing('"  + Math.round( layerCount / allCount * 100 ) +  "%', '" + _("Processing layer %@ of %@", [layerCount, allCount]) + "')");
+            
+                    if (layerIndex >= layersCount) {
+                      this.collectData(index, artboard, data)
+            
+                      artboardIndex++
+                      if (artboardIndex >= artboardCount) {
+                        this.exportComplete(data)
+                      }
+                    }
+                  } else {
+                    interval.cancel()
+                  }
                 })
-            }
-        }
-    },
+              })
+          }
+      }
+  },
     collectData(artboardIndex, artboard, data) {
         var self = this,
           savePath = self.savePath,

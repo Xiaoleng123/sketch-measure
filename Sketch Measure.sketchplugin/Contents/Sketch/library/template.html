@@ -901,6 +901,23 @@ var I18N = {},
                         '</div>'
                     ].join(''): '';
             html.push(this.propertyType('PROPERTIES', [ position, size, opacity, radius, styleName ].join('')));
+            //  EXPORTABLE
+            if(layerData.exportable && layerData.exportable.length > 0){
+                var expHTML = [],
+                path = 'assets/';
+
+                expHTML.push(`<div class="thumb"><img src="${path + layerData.exportable[0].path}"></div>`)
+                expHTML.push('<ul class="exportable">')
+                $.each(layerData.exportable, function(index, exportable) {
+                    var filePath = path + exportable.path;
+                    expHTML.push(
+                        '<li>',
+                            '<a href="' + filePath + '" data-format="' + exportable.format.toUpperCase() + '"><img src="' + filePath + '" alt="' + exportable.path + '">' + exportable.name + '.' + exportable.format + '</a>',
+                        '</li>');
+                });
+                expHTML.push('</ul>')
+                html.push(this.propertyType('EXPORTABLE', expHTML.join('')));
+            }
             // FILLS
             if(layerData.fills && layerData.fills.length > 0){
                 var fills = [],
@@ -1099,23 +1116,6 @@ var I18N = {},
                     );
                 }
                 html.push(this.propertyType('CODE TEMPLATE', [ tab, css, android.join(''), ios.join('') ].join(''), true));
-            }
-            //  EXPORTABLE
-            if(layerData.exportable && layerData.exportable.length > 0){
-                var expHTML = [],
-                path = 'assets/';
-
-                expHTML.push(`<div class="thumb"><img src="${path + layerData.exportable[0].path}"></div>`)
-                expHTML.push('<ul class="exportable">')
-                $.each(layerData.exportable, function(index, exportable) {
-                    var filePath = path + exportable.path;
-                    expHTML.push(
-                        '<li>',
-                            '<a href="' + filePath + '" data-format="' + exportable.format.toUpperCase() + '"><img src="' + filePath + '" alt="' + exportable.path + '">' + exportable.name + '.' + exportable.format + '</a>',
-                        '</li>');
-                });
-                expHTML.push('</ul>')
-                html.push(this.propertyType('EXPORTABLE', expHTML.join('')));
             }
             self.renderInspector(html);
         },
